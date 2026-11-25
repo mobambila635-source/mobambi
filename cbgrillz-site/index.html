@@ -553,7 +553,7 @@ button.cat-restore{color:#000;border:1px solid var(--border);background:#fff;bor
   <span class="active" data-tk="announce1">CB GRILLZ — HAMBURG 🇩🇪</span>
   <span data-tk="announce2">DM TO BOOK YOUR FITTING</span>
   <span data-tk="announce3">CUSTOM GOLD · SILVER · DIAMOND GRILLZ</span>
-  <span data-tk="announce4">20% OFF SELECTED ITEMS</span>
+  <span data-tk="announce4">CUSTOM FIT · HANDMADE</span>
 </div>
 
 <header class="site">
@@ -1153,11 +1153,12 @@ button.cat-restore{color:#000;border:1px solid var(--border);background:#fff;bor
           <div class="form-field"><label data-atk="lbl_ship_low">Shipping if item is under threshold (€)</label><input id="cfgShipLow" type="number" min="0" step="0.01" placeholder="9.99"></div>
         </div>
         <p style="font-size:12.5px;color:var(--muted);margin-bottom:16px;" data-atk="mouldkit_price_desc">The mould kit checkbox in the product popup adds your "Mould Kit" product (in the Mould Kit category) to the cart — edit its price and stock there, in Products.</p>
-        <h4 style="margin:26px 0 4px;font-size:15px;" data-atk="sale_pricing_heading">Sale Pricing (Was / Now)</h4>
-        <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px;" data-atk="sale_pricing_desc">Shows a crossed-out "was" price next to the real price — the real price never changes, the "was" price is just 20% higher, calculated automatically. Pick which categories show it.</p>
+        <h4 style="margin:26px 0 4px;font-size:15px;">Sale Pricing</h4>
+        <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px;">The old "was" markup setting is switched off. The Black Friday Week Sale (5% off, except Single Grillz) is set in the site code (BF_SALE) and ends automatically.</p>
+        <div style="display:none;"><p data-atk="sale_pricing_desc">Shows a crossed-out "was" price next to the real price — the real price never changes, the "was" price is just 20% higher, calculated automatically. Pick which categories show it.</p>
         <label class="ai-enquire-row"><input type="checkbox" id="cfgSaleActive"> <span data-atk="sale_pricing_toggle_label">Show "was" price across the shop</span></label>
         <div class="form-field" style="margin-top:12px;max-width:220px;"><label data-atk="sale_pricing_percent_label">Markup Percentage (%)</label><input id="cfgSalePercent" type="number" min="1" max="500" step="1" placeholder="20"></div>
-        <div id="saleExcludeCatsRow" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:14px;"></div>
+        <div id="saleExcludeCatsRow" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:14px;"></div></div>
         <button class="btn btn-dark" onclick="saveConfig()" data-atk="save_settings_btn">Save Settings</button>
         <div id="cfgSaveMsg" style="margin-top:10px;font-size:13px;color:#2E7D32;"></div>
         <h4 style="margin:30px 0 4px;font-size:15px;" data-atk="homepage_photos_heading">Homepage Photos</h4>
@@ -1396,7 +1397,7 @@ en: {
   logo_word:'CB GRILLZ',
   nav_home:'Home', nav_shop:'Shop', nav_faqs:'FAQs', nav_book:'Book Now', nav_design:'Design Your Own', nav_reviews:'Client Reviews',
   reviews_eyebrow:'Client Reviews', reviews_h1:'Real Clients, Real Grillz', reviews_lead:'Video reviews straight from clients who picked up their custom pieces.', reviews_empty:'No client videos yet — check back soon.',
-  announce1:'CB GRILLZ — HAMBURG 🇩🇪', announce2:'DM TO BOOK YOUR FITTING', announce3:'CUSTOM GOLD · SILVER · DIAMOND GRILLZ', announce4:'20% OFF SELECTED ITEMS',
+  announce1:'CB GRILLZ — HAMBURG 🇩🇪', announce2:'DM TO BOOK YOUR FITTING', announce3:'CUSTOM GOLD · SILVER · DIAMOND GRILLZ', announce4:'CUSTOM FIT · HANDMADE',
   hero1_eyebrow:'CB Grillz · Hamburg, Germany', hero1_h1:'Custom Grillz, Designed For You', hero1_btn1:'Shop Grillz Now', hero1_btn2:'DM To Book',
   trust1_t:'Hamburg Studio', trust1_s:'In-person or send-in mould kit', trust2_s:'Handmade to your exact mould',
   trust3_t:'Fully Removable', trust3_s:'No perms, no cemented caps', trust4_t:'🇺🇸/🇬🇧 Style', trust4_s:'DM to book your fitting',
@@ -1475,7 +1476,7 @@ de: {
   logo_word:'CB GRILLZ',
   nav_home:'Startseite', nav_shop:'Shop', nav_faqs:'FAQs', nav_book:'Jetzt Buchen', nav_design:'Selbst Gestalten', nav_reviews:'Kundenbewertungen',
   reviews_eyebrow:'Kundenbewertungen', reviews_h1:'Echte Kunden, Echte Grillz', reviews_lead:'Videobewertungen direkt von Kunden, die ihre individuellen Stücke abgeholt haben.', reviews_empty:'Noch keine Kundenvideos — schau bald wieder vorbei.',
-  announce1:'CB GRILLZ — HAMBURG 🇩🇪', announce2:'PER DM TERMIN VEREINBAREN', announce3:'INDIVIDUELLE GOLD · SILBER · DIAMANT GRILLZ', announce4:'20% RABATT AUF AUSGEWÄHLTE ARTIKEL',
+  announce1:'CB GRILLZ — HAMBURG 🇩🇪', announce2:'PER DM TERMIN VEREINBAREN', announce3:'INDIVIDUELLE GOLD · SILBER · DIAMANT GRILLZ', announce4:'MASSGEFERTIGT · HANDGEMACHT',
   hero1_eyebrow:'CB Grillz · Hamburg, Deutschland', hero1_h1:'Individuelle Grillz, Für Dich Gemacht', hero1_btn1:'Grillz Entdecken', hero1_btn2:'Per DM Buchen',
   trust1_t:'Hamburg Studio', trust1_s:'Vor Ort oder mit Abdruck-Set per Post', trust2_s:'Handgefertigt nach deinem exakten Abdruck',
   trust3_t:'Komplett Herausnehmbar', trust3_s:'Keine Dauerlösung, keine festen Kronen', trust4_t:'🇺🇸/🇬🇧 Style', trust4_s:'Per DM deinen Termin buchen',
@@ -1645,6 +1646,7 @@ function applyText(){
     if(TXT[key] !== undefined) el.placeholder = TXT[key];
   });
   ['single','sets','gold','fangs'].forEach(k=>{ if(TXT['cat_'+k]) CATS[k].label = TXT['cat_'+k]; });
+  applyBlackFridayBanner();
   renderCartNote();
 }
 let ADMIN_TXT_LANG = 'en';
@@ -2510,23 +2512,56 @@ function isSaleExemptProduct(p){
   const name = String(pLoc(p.name)||'').trim().toLowerCase();
   return SALE_EXEMPT_LABELS.some(k=>name.indexOf(k)!==-1);
 }
+/* ===== Black Friday Week Sale =====
+   Real 5% off every product except Single Grillz (plus the mould kit / bracelets exempted above).
+   The crossed-out price is the product's real current price (what it cost before the sale), and
+   the sale price is what's actually charged — it goes into the cart and checkout total.
+   To change the sale: edit BF_SALE below. To end it early: set active:false.
+   It also switches itself off automatically at endsAt. */
+const BF_SALE = {
+  active: true,
+  pct: 5,
+  endsAt: new Date('2026-12-01T00:00:00+01:00').getTime(), // ends midnight Berlin time, start of 1 Dec
+  excludeCats: ['single'],
+  title: {en:'BLACK FRIDAY WEEK SALE', de:'BLACK FRIDAY WEEK SALE'},
+  detail: {en:'5% OFF EVERYTHING EXCEPT SINGLE GRILLZ', de:'5% RABATT AUF ALLES AUSSER SINGLE GRILLZ'}
+};
+function bfActive(){ return !!BF_SALE.active && Date.now() < BF_SALE.endsAt; }
+function isSingleCategory(cat){
+  if(BF_SALE.excludeCats.includes(cat)) return true;
+  const label = String((CATS[cat] && CATS[cat].label) || '').toLowerCase();
+  return label.indexOf('single') !== -1 || label.indexOf('einzel') !== -1;
+}
 function saleEligible(cat, p){
-  if(!CFG.saleWasPriceActive) return false;
-  if((CFG.saleExcludeCats||[]).includes(cat)) return false;
+  if(!bfActive()) return false;
+  if(isSingleCategory(cat)) return false;
   if(isSaleExemptCategory(cat)) return false;
   if(p && isSaleExemptProduct(p)) return false;
   return true;
 }
-// CONFIRMED BY OWNER'S OWN VOICE NOTE: "don't go with the price lower, the price is staying the
-// same... you show that before it was 20% higher." The real/stored price (p.price / material
-// price / quantity price) is NEVER touched anywhere — not in cart, not at checkout, not in
-// sorting. It is always exactly what the admin typed, full stop. The ONLY thing that changes is a
-// purely cosmetic crossed-out "was" price shown next to it, calculated as current price + 20% —
-// display-only, never charged, never stored, never added to cart.
-function wasPriceFor(rawPrice){
-  const pct = Number(CFG.saleWasPricePercent);
-  const p = pct>0?pct:20;
-  return Math.round((Number(rawPrice)||0) * (1 + p/100));
+// Price actually charged: real price minus the sale %, rounded to the cent.
+function salePrice(rawPrice, cat, p){
+  const raw = Number(rawPrice)||0;
+  if(!saleEligible(cat, p)) return raw;
+  return Math.round(raw * (100 - BF_SALE.pct)) / 100;
+}
+function fmtPrice(n){
+  const v = Number(n)||0;
+  return Number.isInteger(v) ? String(v) : v.toFixed(2);
+}
+// "was €X  €Y -5%" — X is the real pre-sale price, Y the sale price.
+function salePriceHtml(rawPrice, cat, p, prefix){
+  const pre = prefix ? esc(prefix)+' ' : '';
+  if(!saleEligible(cat, p)) return pre+'€'+esc(fmtPrice(rawPrice));
+  return `<span class="price-was">€${esc(fmtPrice(rawPrice))}</span>`+pre+'€'+esc(fmtPrice(salePrice(rawPrice, cat, p)))
+    +`<span class="sale-badge">-${esc(BF_SALE.pct)}%</span>`;
+}
+function applyBlackFridayBanner(){
+  if(!bfActive()) return;
+  const a1 = document.querySelector('#announceBar [data-tk="announce1"]');
+  const a4 = document.querySelector('#announceBar [data-tk="announce4"]');
+  if(a1) a1.textContent = pLoc(BF_SALE.title);
+  if(a4) a4.textContent = pLoc(BF_SALE.detail);
 }
 function isStockTracked(p){ return !!p.trackStock; }
 function productStock(p){ return isStockTracked(p) ? (Number(p.stock)||0) : null; }
@@ -2539,17 +2574,15 @@ function productCardHtml(p, cat){
   const hasVariants = hasMaterials || hasQuantities;
   const hasPrice = hasVariants ? true : (p.price != null && p.price !== '');
   const enquireOnly = !!p.enquireOnly;
-  const saleOn = saleEligible(cat, p);
-  const saleBadge = saleOn ? `<span class="sale-badge">-${esc(Math.round(Number(CFG.saleWasPricePercent)||20))}%</span>` : '';
   let priceHtml;
   if(hasQuantities){
     const minPrice = Math.min(...quantities.map(q=>Number(q.price)||0));
-    priceHtml = (saleOn?`<span class="price-was">€${esc(wasPriceFor(minPrice))}</span>`:'')+esc(TXT.price_from)+' €'+esc(minPrice)+saleBadge;
+    priceHtml = salePriceHtml(minPrice, cat, p, TXT.price_from);
   } else if(hasMaterials){
     const minPrice = Math.min(...materials.map(m=>Number(m.price)||0));
-    priceHtml = (saleOn?`<span class="price-was">€${esc(wasPriceFor(minPrice))}</span>`:'')+esc(TXT.price_from)+' €'+esc(minPrice)+saleBadge;
+    priceHtml = salePriceHtml(minPrice, cat, p, TXT.price_from);
   } else {
-    priceHtml = hasPrice ? ((saleOn?`<span class="price-was">€${esc(wasPriceFor(p.price))}</span>`:'')+'€'+esc(p.price)+saleBadge) : esc(TXT.price_enquire);
+    priceHtml = hasPrice ? salePriceHtml(p.price, cat, p) : esc(TXT.price_enquire);
   }
   const name = pLoc(p.name), badge = pLoc(p.badge);
   const cover = mainImg(p);
@@ -2669,18 +2702,16 @@ function qvSelectImg(i){
 }
 function qvRenderPrice(){
   const priceEl = document.getElementById('qvPrice');
-  const saleOn = saleEligible(qvActive.cat, {name:qvActive.name});
-  const wasHtml = (rawPrice)=> saleOn ? `<span class="price-was">€${esc(wasPriceFor(rawPrice))}</span>` : '';
-  const saleBadge = saleOn ? `<span class="sale-badge">-${esc(Math.round(Number(CFG.saleWasPricePercent)||20))}%</span>` : '';
+  const cat = qvActive.cat, pp = {name:qvActive.name};
   if(qvActive.quantities.length){
     const q = qvActive.quantities.find(x=>x.id===qvActive.quantityId) || qvActive.quantities[0];
-    priceEl.innerHTML = wasHtml(q.price)+'€'+esc(q.price)+saleBadge;
+    priceEl.innerHTML = salePriceHtml(q.price, cat, pp);
   } else if(qvActive.materials.length){
     const m = qvActive.materials.find(x=>x.id===qvActive.materialId) || qvActive.materials[0];
-    priceEl.innerHTML = wasHtml(m.price)+'€'+esc(m.price)+saleBadge;
+    priceEl.innerHTML = salePriceHtml(m.price, cat, pp);
   } else {
     const hasPrice = qvActive.price != null && qvActive.price !== '';
-    priceEl.innerHTML = hasPrice ? (wasHtml(qvActive.price)+'€'+esc(qvActive.price)+saleBadge) : esc(TXT.price_enquire);
+    priceEl.innerHTML = hasPrice ? salePriceHtml(qvActive.price, cat, pp) : esc(TXT.price_enquire);
   }
 }
 function qvMaterialChange(materialId){
@@ -2937,9 +2968,8 @@ function addToCart(cat, id, materialId, quantityId){
     if(!(Number(p.price)>0)){ toast(TXT.cart_item_not_found); return; }
     price = p.price; badge = p.badge||'';
   }
-  // Real price charged is always exactly what's stored (never discounted/adjusted here) — the
-  // "was" sale price is cosmetic-only, calculated and shown purely for display in productCardHtml
-  // / qvRenderPrice. The owner confirmed directly: the real price never moves.
+  // Black Friday Week Sale: the sale price (stored price minus BF_SALE.pct) is what's charged.
+  price = salePrice(price, cat, p);
   if(cart.find(c=>c.cat===cat && c.id===id && (c.materialId||'')===matId && (c.quantityId||'')===qtyId)){ toast(TXT.already_in_cart); return; }
   cart.push({cat, id, materialId:matId, quantityId:qtyId, name:p.name, price, img:mainImg(p)||'', badge});
   updateCartBadge();
@@ -3047,7 +3077,7 @@ function renderCartItems(){
     const name = pLoc(p.name), badge = pLoc(p.badge);
     const img = p.img ? `<div class="ci-img" style="background-image:url('${esc(ikOpt(p.img,150))}')"></div>` : `<div class="ci-ph"></div>`;
     return `<div class="ci">${img}
-      <div><div class="ci-name">${esc(name)}</div>${badge?`<div class="ci-badge">${esc(badge)}</div>`:''}<div class="ci-price">€${esc(p.price)}</div></div>
+      <div><div class="ci-name">${esc(name)}</div>${badge?`<div class="ci-badge">${esc(badge)}</div>`:''}<div class="ci-price">€${esc(fmtPrice(p.price))}</div></div>
       <button class="ci-rm" onclick="removeFromCart('${cat_esc(p.cat)}','${cat_esc(p.id)}','${cat_esc(p.materialId||'')}','${cat_esc(p.quantityId||'')}')">✕</button>
     </div>`;
   }).join('');
@@ -3064,7 +3094,7 @@ function renderCheckoutSummary(){
   el.innerHTML = cart.map(p=>{
     const name = pLoc(p.name), badge = pLoc(p.badge);
     const img = p.img ? `<div class="ci-img" style="background-image:url('${esc(ikOpt(p.img,150))}')"></div>` : `<div class="ci-ph"></div>`;
-    return `<div class="ci"><div style="display:flex;gap:12px;align-items:center;flex:1;">${img}<div><div class="ci-name">${esc(name)}</div>${badge?`<div class="ci-badge">${esc(badge)}</div>`:''}</div></div><span class="ci-price">€${esc(p.price)}</span></div>`;
+    return `<div class="ci"><div style="display:flex;gap:12px;align-items:center;flex:1;">${img}<div><div class="ci-name">${esc(name)}</div>${badge?`<div class="ci-badge">${esc(badge)}</div>`:''}</div></div><span class="ci-price">€${esc(fmtPrice(p.price))}</span></div>`;
   }).join('');
   document.getElementById('chkSubtotal').textContent = '€'+cartSubtotal().toFixed(2);
   document.getElementById('chkShipping').textContent = checkoutShipping()===0 ? 'Free' : '€'+checkoutShipping().toFixed(2);
