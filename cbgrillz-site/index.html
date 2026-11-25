@@ -110,6 +110,12 @@ nav.mainnav{border-top:1px solid var(--border);background:#000;}
 .navlinks>a.nav-bf{padding:4px 12px;border-radius:999px;}
 .navlinks>a.nav-bf:hover{background:#fff;color:#B23B3B;}
 .nav-bf.hidden{display:none !important;}
+.bf-hero{background:#000;border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center;padding:34px 16px 30px;}
+.bf-hero.hidden{display:none;}
+.bf-hero .bf-t{font-size:clamp(30px,7vw,56px);line-height:1.05;color:#fff;text-transform:uppercase;letter-spacing:.5px;}
+.bf-hero .bf-p{font-size:clamp(26px,6vw,46px);line-height:1.1;color:#2ECC71;margin-top:6px;text-transform:uppercase;}
+.bf-hero .bf-s{font-size:clamp(15px,3.6vw,20px);color:#fff;margin-top:10px;}
+.bf-hero .btn{margin-top:18px;}
 .dropdown{position:relative;}
 .dropdown>a{display:flex;align-items:center;gap:5px;font-size:15px;font-weight:500;text-transform:uppercase;letter-spacing:.3px;color:#fff;}
 .dropdown>a:hover{color:var(--gold);}
@@ -631,6 +637,12 @@ button.cat-restore{color:#000;border:1px solid var(--border);background:#fff;bor
 <div id="page-home" class="page active">
 <div id="top"></div>
 
+<section class="bf-hero hidden" id="bfHero">
+  <div class="bf-t">Black Friday Special</div>
+  <div class="bf-p" id="bfHeroPct">Now 5% Off</div>
+  <div class="bf-s" id="bfHeroSub">Our biggest sale of the year 🔥</div>
+  <a href="#" onclick="showCollection('all');return false;" class="btn btn-light">Shop The Sale</a>
+</section>
 <section class="hero" id="heroCarousel">
   <div class="hero-slide active" data-slide="0" id="heroSlide0">
     <video id="heroVideoEl" class="hero-video" muted loop autoplay playsinline></video>
@@ -2583,6 +2595,14 @@ function salePriceHtml(rawPrice, cat, p, prefix, tier){
 function applyBlackFridayBanner(){
   const on = bfActive();
   document.querySelectorAll('.nav-bf').forEach(el=>el.classList.toggle('hidden', !on));
+  const hero = document.getElementById('bfHero');
+  if(hero){
+    hero.classList.toggle('hidden', !on);
+    const pctEl = document.getElementById('bfHeroPct');
+    const subEl = document.getElementById('bfHeroSub');
+    if(pctEl) pctEl.textContent = (LANG==='de' ? 'Jetzt ' : 'Now ') + bfPct() + (LANG==='de' ? '% Rabatt' : '% Off');
+    if(subEl) subEl.textContent = LANG==='de' ? 'Unser größter Sale des Jahres 🔥' : 'Our biggest sale of the year 🔥';
+  }
   const a1 = document.querySelector('#announceBar [data-tk="announce1"]');
   const a4 = document.querySelector('#announceBar [data-tk="announce4"]');
   if(a1) a1.textContent = on ? pLoc(BF_SALE.title) : (TXT.announce1 || '');
