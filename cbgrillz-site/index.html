@@ -1147,8 +1147,12 @@ button.cat-restore{color:#000;border:1px solid var(--border);background:#fff;bor
         </div>
         <div class="admin-add" style="margin-top:0;margin-bottom:22px;">
           <h4>Black Friday Sale</h4>
-          <p style="font-size:12px;color:var(--muted);margin:-8px 0 12px;">While this is on: 5% off everything except the €89.99 Single Cap, the "Black Friday" button in the menu, and the sale message in the top strip. Untick it when the sale is over and everything goes back to how it was.</p>
+          <p style="font-size:12px;color:var(--muted);margin:-8px 0 12px;">While this is on: the % below comes off everything except the €89.99 Single Cap (that's the real price customers pay, and the number on the badge), the "Black Friday" button in the menu, and the sale message in the top strip. Untick it when the sale is over and everything goes back to how it was.</p>
           <label class="ai-enquire-row"><input type="checkbox" id="cfgBfSale" onchange="saveBlackFriday(this.checked)"> <span>Black Friday Sale ON</span></label>
+          <div style="display:flex;gap:8px;align-items:flex-end;margin-top:12px;max-width:320px;">
+            <div class="form-field" style="flex:1;margin:0;"><label>Discount (%)</label><input id="cfgBfPct" type="number" min="1" max="90" step="1" placeholder="5"></div>
+            <button class="btn btn-dark" type="button" onclick="saveBlackFridayPct()">Save %</button>
+          </div>
           <div id="bfSaleMsg" style="font-size:11.5px;color:#2E7D32;margin-top:8px;"></div>
         </div>
         <div class="form-field" style="margin-bottom:14px;"><label data-atk="lbl_ig">Instagram Handle (no @)</label><input id="cfgIg" placeholder="cbgrillz"></div>
@@ -1320,7 +1324,7 @@ let CFG = { instagram:'cbgrillz', turnaround:'7–14 working days', location:'Ha
   catAll:'', catSingle:'', catSets:'', catGold:'', catFangs:'',
   stripePk:'pk_live_51U1pigV05GVvtLBpDPSynSuhsYxfim7JPBCLCOYF5RfMwRBqMvM4uqqurMQMuqqWxeEFqYujRd7wTfnx0b0KMrJi00QfHl122L',
   shippingThreshold:120, shippingHigh:4.99, shippingLow:9.99, apptDurationMin:60, hiddenCats:[], customCats:[], comingSoon:true,
-  saleWasPriceActive:false, saleExcludeCats:[], saleWasPricePercent:20, bfSaleActive:true };
+  saleWasPriceActive:false, saleExcludeCats:[], saleWasPricePercent:20, bfSaleActive:true, bfSalePct:5 };
 /* saleWasPriceActive/saleExcludeCats/saleWasPricePercent: owner-requested "was €X now €Y" sale
    display — the real/selling price NEVER changes, we just show a crossed-out "was" price that's
    X% higher than the real price, above it, on every product card + quick view, across ALL
@@ -2532,11 +2536,16 @@ function isSaleExemptProduct(p){
    Turned on/off by the owner in Admin → Settings → Black Friday Sale (saved as CFG.bfSaleActive).
    Turning it off puts every price, the nav and the announcement bar back to normal. */
 const BF_SALE = {
-  pct: 5,
   title: {en:'BLACK FRIDAY WEEK SALE', de:'BLACK FRIDAY WEEK SALE'},
-  detail: {en:'5% OFF EVERYTHING EXCEPT SINGLE CAPS', de:'5% RABATT AUF ALLES AUSSER SINGLE CAPS'}
+  detail: {en:'{pct}% OFF ALMOST EVERYTHING', de:'{pct}% RABATT AUF FAST ALLES'}
 };
-function bfActive(){ return CFG.bfSaleActive !== false; }
+function bfActive(){ return CFG.bfSaleActive !== false && bfPct() > 0; }
+// Discount % — set by the owner in Admin → Settings → Black Friday Sale. Same number is charged
+// and shown on the badge.
+function bfPct(){
+  const n = Number(CFG.bfSalePct);
+  return (n > 0 && n < 100) ? n : 5;
+}
 // Only ONE product keeps its normal price: the Single Cap that costs €89.99 (all its material
 // options). Every other product gets the sale, including the other "Single Cap ..." products.
 const BF_EXEMPT_PRICE = 89.99;
@@ -2558,7 +2567,7 @@ function saleEligible(cat, p, tier){
 function salePrice(rawPrice, cat, p, tier){
   const raw = Number(rawPrice)||0;
   if(!saleEligible(cat, p, tier)) return raw;
-  return Math.round(raw * (100 - BF_SALE.pct)) / 100;
+  return Math.round(raw * (100 - bfPct())) / 100;
 }
 function fmtPrice(n){
   const v = Number(n)||0;
@@ -2569,7 +2578,7 @@ function salePriceHtml(rawPrice, cat, p, prefix, tier){
   const pre = prefix ? esc(prefix)+' ' : '';
   if(!saleEligible(cat, p, tier)) return pre+'€'+esc(fmtPrice(rawPrice));
   return `<span class="price-was">€${esc(fmtPrice(rawPrice))}</span>`+pre+'€'+esc(fmtPrice(salePrice(rawPrice, cat, p, tier)))
-    +`<span class="sale-badge">-${esc(BF_SALE.pct)}%</span>`;
+    +`<span class="sale-badge">-${esc(bfPct())}%</span>`;
 }
 function applyBlackFridayBanner(){
   const on = bfActive();
@@ -2577,7 +2586,19 @@ function applyBlackFridayBanner(){
   const a1 = document.querySelector('#announceBar [data-tk="announce1"]');
   const a4 = document.querySelector('#announceBar [data-tk="announce4"]');
   if(a1) a1.textContent = on ? pLoc(BF_SALE.title) : (TXT.announce1 || '');
-  if(a4) a4.textContent = on ? pLoc(BF_SALE.detail) : (TXT.announce4 || '');
+  if(a4) a4.textContent = on ? pLoc(BF_SALE.detail).replace('{pct}', bfPct()) : (TXT.announce4 || '');
+}
+async function saveBlackFridayPct(){
+  const el = document.getElementById('cfgBfPct');
+  const msg = document.getElementById('bfSaleMsg');
+  const n = Math.round(Number(el.value));
+  if(!(n >= 1 && n <= 90)){ if(msg){ msg.style.color='#e05a5a'; msg.textContent='Enter a number from 1 to 90.'; } return; }
+  CFG.bfSalePct = n;
+  await saveCFG();
+  applyBlackFridayBanner();
+  renderBestSellers();
+  if(currentCollection) renderCollectionGrid(currentCollection);
+  if(msg){ msg.style.color='#2E7D32'; msg.textContent='Saved — the sale is now '+n+'% off.'; setTimeout(()=>msg.textContent='', 4000); }
 }
 async function saveBlackFriday(on){
   CFG.bfSaleActive = !!on;
@@ -2587,7 +2608,7 @@ async function saveBlackFriday(on){
   if(currentCollection) renderCollectionGrid(currentCollection);
   const msg = document.getElementById('bfSaleMsg');
   if(msg){
-    msg.textContent = on ? 'Black Friday Sale is ON — 5% off is live.' : 'Black Friday Sale is OFF — prices are back to normal.';
+    msg.textContent = on ? 'Black Friday Sale is ON — '+bfPct()+'% off is live.' : 'Black Friday Sale is OFF — prices are back to normal.';
     setTimeout(()=>msg.textContent='', 4000);
   }
 }
@@ -2997,7 +3018,7 @@ function addToCart(cat, id, materialId, quantityId){
     if(!(Number(p.price)>0)){ toast(TXT.cart_item_not_found); return; }
     price = p.price; badge = p.badge||'';
   }
-  // Black Friday Week Sale: the sale price (stored price minus BF_SALE.pct) is what's charged.
+  // Black Friday Week Sale: the sale price (stored price minus bfPct()) is what's charged.
   price = salePrice(price, cat, p, tier);
   if(cart.find(c=>c.cat===cat && c.id===id && (c.materialId||'')===matId && (c.quantityId||'')===qtyId)){ toast(TXT.already_in_cart); return; }
   cart.push({cat, id, materialId:matId, quantityId:qtyId, name:p.name, price, img:mainImg(p)||'', badge});
@@ -4261,6 +4282,7 @@ function loadConfigAdmin(){
   document.getElementById('cfgShipLow').value = CFG.shippingLow != null ? CFG.shippingLow : 9.99;
   document.getElementById('cfgComingSoon').checked = CFG.comingSoon !== false;
   document.getElementById('cfgBfSale').checked = CFG.bfSaleActive !== false;
+  document.getElementById('cfgBfPct').value = bfPct();
   document.getElementById('cfgSaleActive').checked = !!CFG.saleWasPriceActive;
   document.getElementById('cfgSalePercent').value = CFG.saleWasPricePercent != null ? CFG.saleWasPricePercent : 20;
   renderSaleExcludeCatsRow();
