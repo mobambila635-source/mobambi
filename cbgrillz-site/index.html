@@ -106,6 +106,10 @@ nav.mainnav{border-top:1px solid var(--border);background:#000;}
 .navlinks{display:flex;gap:32px;align-items:center;}
 .navlinks>a{font-size:15px;font-weight:500;text-transform:uppercase;letter-spacing:.3px;color:#fff;}
 .navlinks>a:hover{color:var(--gold);}
+.navlinks>a.nav-bf,.mn-item.nav-bf{background:#B23B3B;color:#fff;font-weight:700;letter-spacing:.6px;}
+.navlinks>a.nav-bf{padding:4px 12px;border-radius:999px;}
+.navlinks>a.nav-bf:hover{background:#fff;color:#B23B3B;}
+.nav-bf.hidden{display:none !important;}
 .dropdown{position:relative;}
 .dropdown>a{display:flex;align-items:center;gap:5px;font-size:15px;font-weight:500;text-transform:uppercase;letter-spacing:.3px;color:#fff;}
 .dropdown>a:hover{color:var(--gold);}
@@ -574,6 +578,7 @@ button.cat-restore{color:#000;border:1px solid var(--border);background:#fff;bor
   <nav class="mainnav">
     <div class="navrow">
       <div class="navlinks">
+        <a href="#" class="nav-bf" onclick="showCollection('all');return false;">Black Friday</a>
         <a href="#" onclick="showPage('home');return false;" data-tk="nav_home">Home</a>
         <div class="dropdown">
           <a href="#" onclick="showCollection('all');return false;"><span data-tk="nav_shop">Shop</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></a>
@@ -604,6 +609,7 @@ button.cat-restore{color:#000;border:1px solid var(--border);background:#fff;bor
   </div>
   <div class="mn-panels">
     <div class="mn-panel" id="mnRoot">
+      <a class="mn-item nav-bf" href="#" onclick="showCollection('all');return false;">Black Friday Sale</a>
       <a class="mn-item" href="#" onclick="showPage('home');return false;" data-tk="nav_home">Home</a>
       <div class="mn-item" onclick="mnShow('shopSub')"><span data-tk="nav_shop">Shop</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
       <a class="mn-item" href="#" onclick="showPage('design');return false;" data-tk="nav_design">Design Your Own</a>
@@ -1139,6 +1145,12 @@ button.cat-restore{color:#000;border:1px solid var(--border);background:#fff;bor
           <label class="ai-enquire-row"><input type="checkbox" id="cfgComingSoon" onchange="saveComingSoon(this.checked)"> <span data-atk="coming_soon_label">Keep the site private (Coming Soon screen)</span></label>
           <div id="comingSoonMsg" style="font-size:11.5px;color:#2E7D32;margin-top:8px;"></div>
         </div>
+        <div class="admin-add" style="margin-top:0;margin-bottom:22px;">
+          <h4>Black Friday Sale</h4>
+          <p style="font-size:12px;color:var(--muted);margin:-8px 0 12px;">While this is on: 5% off everything except Single Grillz, the "Black Friday" button in the menu, and the sale message in the top strip. Untick it when the sale is over and everything goes back to how it was.</p>
+          <label class="ai-enquire-row"><input type="checkbox" id="cfgBfSale" onchange="saveBlackFriday(this.checked)"> <span>Black Friday Sale ON</span></label>
+          <div id="bfSaleMsg" style="font-size:11.5px;color:#2E7D32;margin-top:8px;"></div>
+        </div>
         <div class="form-field" style="margin-bottom:14px;"><label data-atk="lbl_ig">Instagram Handle (no @)</label><input id="cfgIg" placeholder="cbgrillz"></div>
         <div class="form-field" style="margin-bottom:14px;"><label data-atk="lbl_turnaround">Turnaround Time</label><input id="cfgTurnaround" placeholder="7–14 working days"></div>
         <div class="form-field" style="margin-bottom:14px;"><label data-atk="lbl_location">Studio Location</label><input id="cfgLocation" placeholder="Hamburg, Germany"></div>
@@ -1154,7 +1166,7 @@ button.cat-restore{color:#000;border:1px solid var(--border);background:#fff;bor
         </div>
         <p style="font-size:12.5px;color:var(--muted);margin-bottom:16px;" data-atk="mouldkit_price_desc">The mould kit checkbox in the product popup adds your "Mould Kit" product (in the Mould Kit category) to the cart — edit its price and stock there, in Products.</p>
         <h4 style="margin:26px 0 4px;font-size:15px;">Sale Pricing</h4>
-        <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px;">The old "was" markup setting is switched off. The Black Friday Week Sale (5% off, except Single Grillz) is set in the site code (BF_SALE) and ends automatically.</p>
+        <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px;">The old "was" markup setting is switched off. Turn the Black Friday Sale on or off at the top of Settings.</p>
         <div style="display:none;"><p data-atk="sale_pricing_desc">Shows a crossed-out "was" price next to the real price — the real price never changes, the "was" price is just 20% higher, calculated automatically. Pick which categories show it.</p>
         <label class="ai-enquire-row"><input type="checkbox" id="cfgSaleActive"> <span data-atk="sale_pricing_toggle_label">Show "was" price across the shop</span></label>
         <div class="form-field" style="margin-top:12px;max-width:220px;"><label data-atk="sale_pricing_percent_label">Markup Percentage (%)</label><input id="cfgSalePercent" type="number" min="1" max="500" step="1" placeholder="20"></div>
@@ -1308,7 +1320,7 @@ let CFG = { instagram:'cbgrillz', turnaround:'7–14 working days', location:'Ha
   catAll:'', catSingle:'', catSets:'', catGold:'', catFangs:'',
   stripePk:'pk_live_51U1pigV05GVvtLBpDPSynSuhsYxfim7JPBCLCOYF5RfMwRBqMvM4uqqurMQMuqqWxeEFqYujRd7wTfnx0b0KMrJi00QfHl122L',
   shippingThreshold:120, shippingHigh:4.99, shippingLow:9.99, apptDurationMin:60, hiddenCats:[], customCats:[], comingSoon:true,
-  saleWasPriceActive:true, saleExcludeCats:[], saleWasPricePercent:20 };
+  saleWasPriceActive:false, saleExcludeCats:[], saleWasPricePercent:20, bfSaleActive:true };
 /* saleWasPriceActive/saleExcludeCats/saleWasPricePercent: owner-requested "was €X now €Y" sale
    display — the real/selling price NEVER changes, we just show a crossed-out "was" price that's
    X% higher than the real price, above it, on every product card + quick view, across ALL
@@ -2516,17 +2528,15 @@ function isSaleExemptProduct(p){
    Real 5% off every product except Single Grillz (plus the mould kit / bracelets exempted above).
    The crossed-out price is the product's real current price (what it cost before the sale), and
    the sale price is what's actually charged — it goes into the cart and checkout total.
-   To change the sale: edit BF_SALE below. To end it early: set active:false.
-   It also switches itself off automatically at endsAt. */
+   Turned on/off by the owner in Admin → Settings → Black Friday Sale (saved as CFG.bfSaleActive).
+   Turning it off puts every price, the nav and the announcement bar back to normal. */
 const BF_SALE = {
-  active: true,
   pct: 5,
-  endsAt: new Date('2026-12-01T00:00:00+01:00').getTime(), // ends midnight Berlin time, start of 1 Dec
   excludeCats: ['single'],
   title: {en:'BLACK FRIDAY WEEK SALE', de:'BLACK FRIDAY WEEK SALE'},
   detail: {en:'5% OFF EVERYTHING EXCEPT SINGLE GRILLZ', de:'5% RABATT AUF ALLES AUSSER SINGLE GRILLZ'}
 };
-function bfActive(){ return !!BF_SALE.active && Date.now() < BF_SALE.endsAt; }
+function bfActive(){ return CFG.bfSaleActive !== false; }
 function isSingleCategory(cat){
   if(BF_SALE.excludeCats.includes(cat)) return true;
   const label = String((CATS[cat] && CATS[cat].label) || '').toLowerCase();
@@ -2557,11 +2567,24 @@ function salePriceHtml(rawPrice, cat, p, prefix){
     +`<span class="sale-badge">-${esc(BF_SALE.pct)}%</span>`;
 }
 function applyBlackFridayBanner(){
-  if(!bfActive()) return;
+  const on = bfActive();
+  document.querySelectorAll('.nav-bf').forEach(el=>el.classList.toggle('hidden', !on));
   const a1 = document.querySelector('#announceBar [data-tk="announce1"]');
   const a4 = document.querySelector('#announceBar [data-tk="announce4"]');
-  if(a1) a1.textContent = pLoc(BF_SALE.title);
-  if(a4) a4.textContent = pLoc(BF_SALE.detail);
+  if(a1) a1.textContent = on ? pLoc(BF_SALE.title) : (TXT.announce1 || '');
+  if(a4) a4.textContent = on ? pLoc(BF_SALE.detail) : (TXT.announce4 || '');
+}
+async function saveBlackFriday(on){
+  CFG.bfSaleActive = !!on;
+  await saveCFG();
+  applyBlackFridayBanner();
+  renderBestSellers();
+  if(currentCollection) renderCollectionGrid(currentCollection);
+  const msg = document.getElementById('bfSaleMsg');
+  if(msg){
+    msg.textContent = on ? 'Black Friday Sale is ON — 5% off is live.' : 'Black Friday Sale is OFF — prices are back to normal.';
+    setTimeout(()=>msg.textContent='', 4000);
+  }
 }
 function isStockTracked(p){ return !!p.trackStock; }
 function productStock(p){ return isStockTracked(p) ? (Number(p.stock)||0) : null; }
@@ -4231,6 +4254,7 @@ function loadConfigAdmin(){
   document.getElementById('cfgShipHigh').value = CFG.shippingHigh != null ? CFG.shippingHigh : 4.99;
   document.getElementById('cfgShipLow').value = CFG.shippingLow != null ? CFG.shippingLow : 9.99;
   document.getElementById('cfgComingSoon').checked = CFG.comingSoon !== false;
+  document.getElementById('cfgBfSale').checked = CFG.bfSaleActive !== false;
   document.getElementById('cfgSaleActive').checked = !!CFG.saleWasPriceActive;
   document.getElementById('cfgSalePercent').value = CFG.saleWasPricePercent != null ? CFG.saleWasPricePercent : 20;
   renderSaleExcludeCatsRow();
@@ -4270,7 +4294,7 @@ async function saveConfig(){
   CFG.shippingHigh = highRaw !== '' ? Math.max(0, Number(highRaw)||0) : (CFG.shippingHigh != null ? CFG.shippingHigh : 4.99);
   const lowRaw = document.getElementById('cfgShipLow').value;
   CFG.shippingLow = lowRaw !== '' ? Math.max(0, Number(lowRaw)||0) : (CFG.shippingLow != null ? CFG.shippingLow : 9.99);
-  CFG.saleWasPriceActive = !!document.getElementById('cfgSaleActive').checked;
+  CFG.saleWasPriceActive = false; // old cosmetic markup retired — not used anymore
   const pctRaw = document.getElementById('cfgSalePercent').value;
   CFG.saleWasPricePercent = pctRaw !== '' ? Math.max(1, Number(pctRaw)||20) : (CFG.saleWasPricePercent != null ? CFG.saleWasPricePercent : 20);
   CFG.saleExcludeCats = Array.from(document.querySelectorAll('.saleExcludeCatChk:checked')).map(c=>c.value);
