@@ -1,0 +1,41 @@
+[build]
+  functions = "netlify/functions"
+  publish = "."
+
+[[redirects]]
+  from = "/api/create-payment-intent"
+  to = "/.netlify/functions/create-payment-intent"
+  status = 200
+
+[[redirects]]
+  from = "/api/stripe-webhook"
+  to = "/.netlify/functions/stripe-webhook"
+  status = 200
+
+[[redirects]]
+  from = "/api/imagekit-auth"
+  to = "/.netlify/functions/imagekit-auth"
+  status = 200
+
+[[redirects]]
+  from = "/api/track-visit"
+  to = "/.netlify/functions/track-visit"
+  status = 200
+
+[[redirects]]
+  from = "/api/db-write"
+  to = "/.netlify/functions/db-write"
+  status = 200
+
+[[redirects]]
+  from = "/api/backup-admin"
+  to = "/.netlify/functions/backup-admin"
+  status = 200
+
+[[redirects]]
+  from = "/api/admin-login"
+  to = "/.netlify/functions/admin-login"
+  status = 200
+
+[functions."backup"]
+  schedule = "0 3 * * *"
