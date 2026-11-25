@@ -2534,7 +2534,7 @@ const BF_SALE = {
   pct: 5,
   excludeCats: ['single'],
   title: {en:'BLACK FRIDAY WEEK SALE', de:'BLACK FRIDAY WEEK SALE'},
-  detail: {en:'5% OFF EVERYTHING EXCEPT SINGLE GRILLZ', de:'5% RABATT AUF ALLES AUSSER SINGLE GRILLZ'}
+  detail: {en:'5% OFF EVERYTHING EXCEPT SINGLE CAPS', de:'5% RABATT AUF ALLES AUSSER SINGLE CAPS'}
 };
 function bfActive(){ return CFG.bfSaleActive !== false; }
 function isSingleCategory(cat){
@@ -2542,17 +2542,25 @@ function isSingleCategory(cat){
   const label = String((CATS[cat] && CATS[cat].label) || '').toLowerCase();
   return label.indexOf('single') !== -1 || label.indexOf('einzel') !== -1;
 }
-function saleEligible(cat, p){
+// Single caps never get the sale, however they're set up in the shop: the Single category, a
+// product with "single"/"einzel"/"cap" in its name, or the 1-tooth option of a tooth-quantity product.
+function isSingleProduct(p){
+  const n = String(pLoc(p && p.name)||'').toLowerCase();
+  return /single|einzel|\bcaps?\b/.test(n);
+}
+function saleEligible(cat, p, tier){
   if(!bfActive()) return false;
   if(isSingleCategory(cat)) return false;
+  if(p && isSingleProduct(p)) return false;
+  if(tier && Number(tier.qty) === 1) return false;
   if(isSaleExemptCategory(cat)) return false;
   if(p && isSaleExemptProduct(p)) return false;
   return true;
 }
 // Price actually charged: real price minus the sale %, rounded to the cent.
-function salePrice(rawPrice, cat, p){
+function salePrice(rawPrice, cat, p, tier){
   const raw = Number(rawPrice)||0;
-  if(!saleEligible(cat, p)) return raw;
+  if(!saleEligible(cat, p, tier)) return raw;
   return Math.round(raw * (100 - BF_SALE.pct)) / 100;
 }
 function fmtPrice(n){
@@ -2560,10 +2568,10 @@ function fmtPrice(n){
   return Number.isInteger(v) ? String(v) : v.toFixed(2);
 }
 // "was €X  €Y -5%" — X is the real pre-sale price, Y the sale price.
-function salePriceHtml(rawPrice, cat, p, prefix){
+function salePriceHtml(rawPrice, cat, p, prefix, tier){
   const pre = prefix ? esc(prefix)+' ' : '';
-  if(!saleEligible(cat, p)) return pre+'€'+esc(fmtPrice(rawPrice));
-  return `<span class="price-was">€${esc(fmtPrice(rawPrice))}</span>`+pre+'€'+esc(fmtPrice(salePrice(rawPrice, cat, p)))
+  if(!saleEligible(cat, p, tier)) return pre+'€'+esc(fmtPrice(rawPrice));
+  return `<span class="price-was">€${esc(fmtPrice(rawPrice))}</span>`+pre+'€'+esc(fmtPrice(salePrice(rawPrice, cat, p, tier)))
     +`<span class="sale-badge">-${esc(BF_SALE.pct)}%</span>`;
 }
 function applyBlackFridayBanner(){
@@ -2599,8 +2607,9 @@ function productCardHtml(p, cat){
   const enquireOnly = !!p.enquireOnly;
   let priceHtml;
   if(hasQuantities){
-    const minPrice = Math.min(...quantities.map(q=>Number(q.price)||0));
-    priceHtml = salePriceHtml(minPrice, cat, p, TXT.price_from);
+    // cheapest option after the sale (the 1-tooth option keeps its normal price)
+    const best = quantities.reduce((a,q)=> (!a || salePrice(q.price,cat,p,q) < salePrice(a.price,cat,p,a)) ? q : a, null);
+    priceHtml = salePriceHtml(best.price, cat, p, TXT.price_from, best);
   } else if(hasMaterials){
     const minPrice = Math.min(...materials.map(m=>Number(m.price)||0));
     priceHtml = salePriceHtml(minPrice, cat, p, TXT.price_from);
@@ -2728,7 +2737,7 @@ function qvRenderPrice(){
   const cat = qvActive.cat, pp = {name:qvActive.name};
   if(qvActive.quantities.length){
     const q = qvActive.quantities.find(x=>x.id===qvActive.quantityId) || qvActive.quantities[0];
-    priceEl.innerHTML = salePriceHtml(q.price, cat, pp);
+    priceEl.innerHTML = salePriceHtml(q.price, cat, pp, null, q);
   } else if(qvActive.materials.length){
     const m = qvActive.materials.find(x=>x.id===qvActive.materialId) || qvActive.materials[0];
     priceEl.innerHTML = salePriceHtml(m.price, cat, pp);
@@ -2980,10 +2989,10 @@ function addToCart(cat, id, materialId, quantityId){
   if(!p || p.enquireOnly || isSoldOut(p)){ toast(TXT.cart_item_not_found); return; }
   const materials = productMaterials(p);
   const quantities = productQuantities(p);
-  let price, badge, matId = '', qtyId = '';
+  let price, badge, matId = '', qtyId = '', tier = null;
   if(quantities.length){
     const q = quantities.find(x=>x.id===quantityId) || quantities[0];
-    price = q.price; badge = quantityBadgeObj(q); qtyId = q.id;
+    price = q.price; badge = quantityBadgeObj(q); qtyId = q.id; tier = q;
   } else if(materials.length){
     const m = materials.find(x=>x.id===materialId) || materials[0];
     price = m.price; badge = materialLocObj(m); matId = m.id;
@@ -2992,7 +3001,7 @@ function addToCart(cat, id, materialId, quantityId){
     price = p.price; badge = p.badge||'';
   }
   // Black Friday Week Sale: the sale price (stored price minus BF_SALE.pct) is what's charged.
-  price = salePrice(price, cat, p);
+  price = salePrice(price, cat, p, tier);
   if(cart.find(c=>c.cat===cat && c.id===id && (c.materialId||'')===matId && (c.quantityId||'')===qtyId)){ toast(TXT.already_in_cart); return; }
   cart.push({cat, id, materialId:matId, quantityId:qtyId, name:p.name, price, img:mainImg(p)||'', badge});
   updateCartBadge();
